@@ -25,6 +25,18 @@ class Result {
     }
 };
 
+class Ingredient {
+    int classIndex;
+    String ingredientName;
+    Float score;
+
+    public Ingredient(int cls, Float output, String ingredientName) {
+        this.classIndex = cls;
+        this.score = output;
+        this.ingredientName = ingredientName;
+    }
+}
+
 public class PrePostProcessor {
     // for yolov5 model, no need to apply MEAN and STD
     static float[] NO_MEAN_RGB = new float[] {0.0f, 0.0f, 0.0f};
@@ -114,6 +126,27 @@ public class PrePostProcessor {
         float intersectionArea = Math.max(intersectionMaxY - intersectionMinY, 0) *
                 Math.max(intersectionMaxX - intersectionMinX, 0);
         return intersectionArea / (areaA + areaB - intersectionArea);
+    }
+
+    static ArrayList<Ingredient> toIngredientList(ArrayList<Result> results){
+        ArrayList<Ingredient> ingredientsList = new ArrayList<>();
+        boolean contains = false;
+        for (Result result : results) {
+            Ingredient myIngredient = new Ingredient(result.classIndex, result.score, PrePostProcessor.mClasses[result.classIndex]);
+            for (Ingredient ingredient : ingredientsList){
+                if (ingredient.classIndex == myIngredient.classIndex){
+                    contains = true;
+                    if (myIngredient.score > ingredient.score){
+                        ingredient.score = myIngredient.score;
+                    }
+                }
+            }
+            if (!contains){
+                ingredientsList.add(myIngredient);
+            }
+            contains = false;
+        }
+        return ingredientsList;
     }
 
     static ArrayList<Result> outputsToNMSPredictions(float[] outputs, float imgScaleX, float imgScaleY, float ivScaleX, float ivScaleY, float startX, float startY) {

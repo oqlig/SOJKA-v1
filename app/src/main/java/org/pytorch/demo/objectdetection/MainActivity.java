@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
@@ -195,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         final Tensor outputTensor = outputTuple[0].toTensor();
         final float[] outputs = outputTensor.getDataAsFloatArray();
         final ArrayList<Result> results =  PrePostProcessor.outputsToNMSPredictions(outputs, mImgScaleX, mImgScaleY, mIvScaleX, mIvScaleY, mStartX, mStartY);
+        final ArrayList<Ingredient> ingredients = PrePostProcessor.toIngredientList(results);
 
         runOnUiThread(() -> {
             mButtonDetect.setEnabled(true);
@@ -203,6 +205,10 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             mResultView.setResults(results);
             mResultView.invalidate();
             mResultView.setVisibility(View.VISIBLE);
+            for (Ingredient ingredient : ingredients){
+                Log.i("kupadupa", String.format("%d %s %.2f", ingredient.classIndex, ingredient.ingredientName, ingredient.score));
+            }
+
         });
     }
 }
