@@ -4,6 +4,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3a0afacb36bd524a6c495a32bbd26f1a/jetified-pytorch_android-1.7.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3a0afacb36bd524a6c495a32bbd26f1a/jetified-pytorch_android-1.7.0/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3a0afacb36bd524a6c495a32bbd26f1a/jetified-pytorch_android-1.7.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f022dfc096a45da957f02c349a4ebb96/jetified-pytorch_android-1.7.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f022dfc096a45da957f02c349a4ebb96/jetified-pytorch_android-1.7.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f022dfc096a45da957f02c349a4ebb96/jetified-pytorch_android-1.7.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.pytorch/pytorch_android/1.7.0/47f9a12c287a5636bce0757506e29fe06233c2d5/pytorch_android-1.7.0-javadoc.jar!/" />

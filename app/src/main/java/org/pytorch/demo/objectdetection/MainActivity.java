@@ -48,7 +48,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
     private int mImageIndex = 0;
-    private String[] mTestImages = {"initial.jpg", "test1.png", "test2.jpg"};
+    private final String[] mTestImages = {"initial.jpg", "test1.png", "test2.jpg"};
 
     private ImageView mImageView;
     private ResultView mResultView;
@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements Runnable {
     private Bitmap mBitmap = null;
     private Module mModule = null;
     private float mImgScaleX, mImgScaleY, mIvScaleX, mIvScaleY, mStartX, mStartY;
+    private ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
+    private ArrayList<StringBuffer> ingredientsList = new ArrayList<StringBuffer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,16 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         mImageView.setImageBitmap(mBitmap);
         mResultView = findViewById(R.id.resultView);
         mResultView.setVisibility(View.INVISIBLE);
+
+        Button mButtonShow = findViewById(R.id.buttonShow);
+        mButtonShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newIntent = new Intent (MainActivity.this, ShowResults.class);
+                newIntent.putExtra("ingredientsList", ingredientsList);
+                startActivity(newIntent);
+            }
+        });
 
         final Button buttonTest = findViewById(R.id.testButton);
         buttonTest.setText(("Test Image 1/3"));
@@ -196,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         final Tensor outputTensor = outputTuple[0].toTensor();
         final float[] outputs = outputTensor.getDataAsFloatArray();
         final ArrayList<Result> results =  PrePostProcessor.outputsToNMSPredictions(outputs, mImgScaleX, mImgScaleY, mIvScaleX, mIvScaleY, mStartX, mStartY);
-        final ArrayList<Ingredient> ingredients = PrePostProcessor.toIngredientList(results);
+        ingredients = PrePostProcessor.toIngredientList(results);
 
         runOnUiThread(() -> {
             mButtonDetect.setEnabled(true);
@@ -205,10 +217,25 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             mResultView.setResults(results);
             mResultView.invalidate();
             mResultView.setVisibility(View.VISIBLE);
+            ingredientsList = ingredientsListToStringList(ingredients);
             for (Ingredient ingredient : ingredients){
                 Log.i("kupadupa", String.format("%d %s %.2f", ingredient.classIndex, ingredient.ingredientName, ingredient.score));
             }
 
         });
+    }
+
+    private ArrayList<StringBuffer> ingredientsListToStringList(ArrayList<Ingredient> Ingridients){
+        ArrayList<StringBuffer> ingredientsList = new ArrayList<StringBuffer>();
+        for (int i=0; i < Ingridients.size(); ++i){
+            ingredientsList.add(i,new StringBuffer());
+        }
+        for (int i=0; i < Ingridients.size(); ++i){
+            ingredientsList.get(i).append(ingredients.get(i).ingredientName);
+        }
+        Log.i("testowanie", String.format(ingredientsList.toString()));
+
+        return ingredientsList;
+
     }
 }
