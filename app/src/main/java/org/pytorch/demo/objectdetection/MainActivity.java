@@ -12,17 +12,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -36,14 +32,9 @@ import org.pytorch.Tensor;
 import org.pytorch.torchvision.TensorImageUtils;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
@@ -59,10 +50,12 @@ public class MainActivity extends AppCompatActivity implements Runnable {
     private float mImgScaleX, mImgScaleY, mIvScaleX, mIvScaleY, mStartX, mStartY;
     private ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
     private ArrayList<StringBuffer> ingredientsList = new ArrayList<StringBuffer>();
-
+    ArrayList<String> ingredientsNameList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ingredientsNameList = new ArrayList<>();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -91,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             @Override
             public void onClick(View v) {
                 Intent newIntent = new Intent (MainActivity.this, ShowResults.class);
-                newIntent.putExtra("ingredientsList", ingredientsList);
+                newIntent.putExtra("ingredientsList", ingredientsNameList);
                 startActivity(newIntent);
             }
         });
@@ -217,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             mResultView.setResults(results);
             mResultView.invalidate();
             mResultView.setVisibility(View.VISIBLE);
-            ingredientsList = ingredientsListToStringList(ingredients);
+            ingredientsListToStringList();
             for (Ingredient ingredient : ingredients){
                 Log.i("kupadupa", String.format("%d %s %.2f", ingredient.classIndex, ingredient.ingredientName, ingredient.score));
             }
@@ -225,17 +218,11 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         });
     }
 
-    private ArrayList<StringBuffer> ingredientsListToStringList(ArrayList<Ingredient> Ingridients){
-        ArrayList<StringBuffer> ingredientsList = new ArrayList<StringBuffer>();
-        for (int i=0; i < Ingridients.size(); ++i){
-            ingredientsList.add(i,new StringBuffer());
+    void ingredientsListToStringList(){
+        this.ingredientsNameList.clear();
+        for (int i=0; i < ingredients.size(); ++i){
+            this.ingredientsNameList.add(ingredients.get(i).ingredientName);
         }
-        for (int i=0; i < Ingridients.size(); ++i){
-            ingredientsList.get(i).append(ingredients.get(i).ingredientName);
-        }
-        Log.i("testowanie", String.format(ingredientsList.toString()));
-
-        return ingredientsList;
-
+        Log.i("testowanie", ingredientsNameList.toString());
     }
 }

@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DatabaseAccess {
     private SQLiteOpenHelper openHelper;
     private SQLiteDatabase db;
@@ -30,4 +32,24 @@ public class DatabaseAccess {
             this.db.close();
         }
     }
+
+    public ArrayList<String> extractRecipesIdsFromIngredientsTables (String Name){
+        ArrayList<String> ids = new ArrayList<>();
+        cursor=db.rawQuery("select * from " + Name, null);
+        while (cursor.moveToNext()){
+            ids.add(cursor.getString(0));
+        }
+        return ids;
+    }
+
+    public Cursor selectAllRecipiesOfGivenIDs (ArrayList<String> ids){
+        if (ids.size() == 0) {return null;}
+        String query = "SELECT * FROM recipes WHERE id = " + ids.get(0);
+        for (int i = 1; i < ids.size(); ++i){
+            query += " OR id = " + ids.get(i);
+        }
+        cursor=db.rawQuery(query, null);
+        return cursor;
+    }
+
 }
