@@ -48,7 +48,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
     private int mImageIndex = 0;
-    private final String[] mTestImages = {"initial.jpg", "test1.png", "test2.jpg"};
+    private final String[] mTestImages = {"walid1.png", "initial.jpg", "test2.jpg"};
 
     private ImageView mImageView;
     private ResultView mResultView;
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         });
 
         try {
-            mModule = PyTorchAndroid.loadModuleFromAsset(getAssets(), "yolov5s.torchscript.pt");
+            mModule = PyTorchAndroid.loadModuleFromAsset(getAssets(), "best.torchscript.pt");
             BufferedReader br = new BufferedReader(new InputStreamReader(getAssets().open("classes.txt")));
             String line;
             List<String> classes = new ArrayList<>();
