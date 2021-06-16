@@ -1,6 +1,8 @@
 package org.pytorch.demo.objectdetection;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,11 +12,18 @@ import java.util.ArrayList;
 
 public class ShowResults extends AppCompatActivity {
 
+    RecyclerView recyclerView;
+
     DatabaseAccess databaseAccess;
     ArrayList<String> id, title, picture, time, instructions, ingredients;
 
+    CustomAdapter customAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_show_results);
+
 
         id = new ArrayList<>();
         title = new ArrayList<>();
@@ -22,6 +31,10 @@ public class ShowResults extends AppCompatActivity {
         time = new ArrayList<>();
         instructions = new ArrayList<>();
         ingredients = new ArrayList<>();
+
+        customAdapter = new CustomAdapter(ShowResults.this, title, time);
+
+
 
         databaseAccess = DatabaseAccess.getInstance(ShowResults.this);
         databaseAccess.open();
@@ -54,15 +67,11 @@ public class ShowResults extends AppCompatActivity {
         moveDataExtractedFromDataBaseIntoArrays(finalIDArrayList);
 
 
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setAdapter(customAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(ShowResults.this));
+
         Log.i("testowanie_w_nowej_aktywności", title.toString());
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_results);
-        id.clear();
-        title.clear();
-        picture.clear();
-        time.clear();
-        instructions.clear();
-        finalIDArrayList.clear();
     }
 
     void moveDataExtractedFromDataBaseIntoArrays(ArrayList<String> idsToSelectRecipes){
