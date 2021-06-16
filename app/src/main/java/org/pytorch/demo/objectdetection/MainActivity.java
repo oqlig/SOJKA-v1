@@ -12,17 +12,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -36,19 +32,14 @@ import org.pytorch.Tensor;
 import org.pytorch.torchvision.TensorImageUtils;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
     private int mImageIndex = 0;
-    private final String[] mTestImages = {"walid1.png", "initial.jpg", "test2.jpg"};
+    private final String[] mTestImages = {"test1.png", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg", "test6.jpg", "test7.png", "test8.jpg"};
 
     private ImageView mImageView;
     private ResultView mResultView;
@@ -58,11 +49,13 @@ public class MainActivity extends AppCompatActivity implements Runnable {
     private Module mModule = null;
     private float mImgScaleX, mImgScaleY, mIvScaleX, mIvScaleY, mStartX, mStartY;
     private ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
-    private ArrayList<StringBuffer> ingredientsList = new ArrayList<StringBuffer>();
-
+    private final ArrayList<StringBuffer> ingredientsList = new ArrayList<StringBuffer>();
+    ArrayList<String> ingredientsNameList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ingredientsNameList = new ArrayList<>();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -91,13 +84,13 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             @Override
             public void onClick(View v) {
                 Intent newIntent = new Intent (MainActivity.this, ShowResults.class);
-                newIntent.putExtra("ingredientsList", ingredientsList);
+                newIntent.putExtra("ingredientsList", ingredientsNameList);
                 startActivity(newIntent);
             }
         });
 
         final Button buttonTest = findViewById(R.id.testButton);
-        buttonTest.setText(("Test Image 1/3"));
+        buttonTest.setText(("Test Image 1/8"));
         buttonTest.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mResultView.setVisibility(View.INVISIBLE);
@@ -149,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
 //        });
 
         mButtonDetect = findViewById(R.id.detectButton);
-        mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mButtonDetect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mButtonDetect.setEnabled(false);
@@ -217,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             mResultView.setResults(results);
             mResultView.invalidate();
             mResultView.setVisibility(View.VISIBLE);
-            ingredientsList = ingredientsListToStringList(ingredients);
+            ingredientsListToStringList();
             for (Ingredient ingredient : ingredients){
                 Log.i("kupadupa", String.format("%d %s %.2f", ingredient.classIndex, ingredient.ingredientName, ingredient.score));
             }
@@ -225,17 +218,11 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         });
     }
 
-    private ArrayList<StringBuffer> ingredientsListToStringList(ArrayList<Ingredient> Ingridients){
-        ArrayList<StringBuffer> ingredientsList = new ArrayList<StringBuffer>();
-        for (int i=0; i < Ingridients.size(); ++i){
-            ingredientsList.add(i,new StringBuffer());
+    void ingredientsListToStringList(){
+        this.ingredientsNameList.clear();
+        for (int i=0; i < ingredients.size(); ++i){
+            this.ingredientsNameList.add(ingredients.get(i).ingredientName);
         }
-        for (int i=0; i < Ingridients.size(); ++i){
-            ingredientsList.get(i).append(ingredients.get(i).ingredientName);
-        }
-        Log.i("testowanie", String.format(ingredientsList.toString()));
-
-        return ingredientsList;
-
+        Log.i("testowanie", ingredientsNameList.toString());
     }
 }
