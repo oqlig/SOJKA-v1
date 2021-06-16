@@ -39,7 +39,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
     private int mImageIndex = 0;
-    private final String[] mTestImages = {"walid1.png", "initial.jpg", "test2.jpg"};
+    private final String[] mTestImages = {"test1.png", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg", "test6.jpg", "test7.png", "test8.jpg"};
 
     private ImageView mImageView;
     private ResultView mResultView;
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         });
 
         final Button buttonTest = findViewById(R.id.testButton);
-        buttonTest.setText(("Test Image 1/3"));
+        buttonTest.setText(("Test Image 1/8"));
         buttonTest.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mResultView.setVisibility(View.INVISIBLE);
